@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Agriculture System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="scan-line"></div>
+    
+    <div class="update-indicator" id="updateIndicator">
+        <span class="pulse-dot"></span> SYNCING DATA
+    </div>
+
+    <div class="container">
+        <header class="header">
+            <h1 class="glitch" data-text="⚡ SMART AGRICULTURE">⚡ SMART AGRICULTURE</h1>
+            <div class="subtitle">REAL-TIME IOT MONITORING SYSTEM</div>
+            <div class="status-bar">
+                <div class="status-item">
+                    <span class="status-label">SYSTEM:</span>
+                    <span class="status-value" id="systemStatus">ONLINE</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">SYNC:</span>
+                    <span class="status-value" id="lastUpdate">--</span>
+                </div>
+            </div>
+        </header>
+        
+        <div class="grid">
+            <!-- Temperature Card -->
+            <div class="card" data-tilt>
+                <div class="card-glow"></div>
+                <div class="card-icon">🌡️</div>
+                <div class="card-label">TEMPERATURE</div>
+                <div class="card-value" id="temp">--</div>
+                <div class="card-unit">°C</div>
+                <div class="progress-ring">
+                    <svg width="140" height="140">
+                        <defs>
+                            <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#ff0080;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#ff8c00;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <circle class="progress-bg" cx="70" cy="70" r="60"></circle>
+                        <circle class="progress-bar" cx="70" cy="70" r="60" 
+                                stroke="url(#gradient1)" id="tempProgress"></circle>
+                    </svg>
+                    <div class="progress-text" id="tempPercent">0%</div>
+                </div>
+            </div>
+
+            <!-- Humidity Card -->
+            <div class="card" data-tilt>
+                <div class="card-glow"></div>
+                <div class="card-icon">💧</div>
+                <div class="card-label">HUMIDITY</div>
+                <div class="card-value" id="humid">--</div>
+                <div class="card-unit">%</div>
+                <div class="progress-ring">
+                    <svg width="140" height="140">
+                        <defs>
+                            <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#00f3ff;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#0080ff;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <circle class="progress-bg" cx="70" cy="70" r="60"></circle>
+                        <circle class="progress-bar" cx="70" cy="70" r="60" 
+                                stroke="url(#gradient2)" id="humidProgress"></circle>
+                    </svg>
+                    <div class="progress-text" id="humidPercent">0%</div>
+                </div>
+            </div>
+
+            <!-- Soil Moisture Card -->
+            <div class="card" data-tilt>
+                <div class="card-glow"></div>
+                <div class="card-icon">🌾</div>
+                <div class="card-label">SOIL MOISTURE</div>
+                <div class="card-value" id="soil">--</div>
+                <div class="card-unit">RAW</div>
+                <div class="card-status-badge" id="soilStatus">ANALYZING</div>
+                <div class="mini-graph">
+                    <canvas id="soilGraph" width="200" height="60"></canvas>
+                </div>
+            </div>
+
+            <!-- Light Level Card -->
+            <div class="card" data-tilt>
+                <div class="card-glow"></div>
+                <div class="card-icon">☀️</div>
+                <div class="card-label">LIGHT INTENSITY</div>
+                <div class="card-value" id="light">--</div>
+                <div class="card-unit">RAW</div>
+                <div class="card-status-badge" id="lightStatus">ANALYZING</div>
+                <div class="mini-graph">
+                    <canvas id="lightGraph" width="200" height="60"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Box -->
+        <div class="alert-box" id="alertBox">
+            <div class="alert-icon">⚠️</div>
+            <div class="alert-text" id="alertText">INITIALIZING SYSTEM...</div>
+        </div>
+<!-- AI Chat Interface -->
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="chat-title">🤖 AI Plant Assistant</div>
+                <div class="chat-subtitle">Ask me anything about your plant's health</div>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-message bot-message">
+                    <div class="message-avatar">🌱</div>
+                    <div class="message-content">
+                        Hi! I'm your AI plant assistant. I can analyze your sensor data and answer questions about your plant's health. Try asking me something!
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input-container">
+                <input type="text" id="chatInput" class="chat-input" placeholder="Ask about your plant... (e.g., 'Does my plant need water?')" />
+                <button id="sendBtn" class="chat-send-btn">
+                    <span id="sendBtnText">Send</span>
+                    <span id="sendBtnLoader" class="loader" style="display:none;"></span>
+                </button>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-left">ESP32 IoT Agriculture Platform</div>
+            <div class="footer-right">Auto-refresh: 5s</div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
