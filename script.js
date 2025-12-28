@@ -210,6 +210,7 @@ function drawMiniGraph(canvasId, data, color) {
     ctx.fillStyle = gradient;
     ctx.fill();
 }
+
 // ============================================
 // AI CHAT FUNCTIONALITY
 // ============================================
@@ -239,7 +240,21 @@ function getSensorContext() {
     };
 }
 
-
+// Send message to backend server
+async function sendToAI(userMessage) {
+    const sensorData = getSensorContext();
+    
+    try {
+        const response = await fetch('https://smart-agriculture-system-project.vercel.app/api/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: userMessage,
+                sensorData: sensorData
+            })
+        });
         
         if (!response.ok) {
             throw new Error('Backend request failed');
@@ -316,11 +331,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const sendBtn = document.getElementById('sendBtn');
     const chatInput = document.getElementById('chatInput');
     
-    sendBtn.addEventListener('click', handleSendMessage);
-    
-    chatInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            handleSendMessage();
-        }
-    });
+    if (sendBtn && chatInput) {
+        sendBtn.addEventListener('click', handleSendMessage);
+        
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleSendMessage();
+            }
+        });
+    }
 });
