@@ -72,6 +72,90 @@ Water Pump Circuit:
 - Relay NO → Pump RED (+)
 - Pump BLACK (-) → USB Adapter BLACK (-)
 - USB BLACK also connected to ESP32 GND (common ground)
+## 📍 Complete Pin Diagram
+
+### ESP32 Pin Connections
+```
+ESP32 DevKit V1 Pin Layout:
+                    ┌─────────────────┐
+                    │                 │
+              EN ───┤                 ├─── D23
+             VP/36──┤                 ├─── D22
+             VN/39──┤                 ├─── TX0
+              D34───┤   ●       ●     ├─── RX0
+              D35───┤                 ├─── D21
+              D32───┤                 ├─── D19
+              D33───┤                 ├─── D18
+              D25───┤                 ├─── D5
+              D26───┤                 ├─── D17
+              D27───┤   ESP32         ├─── D16
+              D14───┤   DevKit        ├─── D4  
+              D12───┤     V1          ├─── D0
+              D13───┤                 ├─── D2
+              GND───┤                 ├─── D15
+              VIN───┤                 ├─── GND
+                    │                 │
+             3.3V───┤                 ├─── 3.3V
+              GND───┤                 ├─── GND
+                    └─────────────────┘
+                         USB-C
+```
+
+### Sensor Wiring Table
+
+| Component | Component Pin | ESP32 Pin | Notes |
+|-----------|---------------|-----------|-------|
+| **DHT22** | VCC | 3.3V rail | Temperature & Humidity |
+| | DATA | D13 | GPIO 13 |
+| | GND | GND rail | |
+| **Soil Moisture** | VCC | 3.3V rail | Capacitive sensor |
+| | AOUT | D34 | Analog input |
+| | GND | GND rail | |
+| **LDR Module** | VCC | 3.3V rail | Light sensor |
+| | DO | D35 | Digital output |
+| | GND | GND rail | |
+| **Relay Module** | VCC | VIN | **5V required!** |
+| | IN | D4 | Control signal |
+| | GND | GND rail | Common ground |
+| **Water Pump** | + (RED) | Relay NO | Via relay |
+| | - (BLACK) | Adapter GND | Common ground |
+
+### Breadboard Power Distribution
+```
+Breadboard Layout:
+    
+    + Rail (3.3V) ←── ESP32 3.3V Pin
+    │
+    ├── DHT22 VCC
+    ├── Soil Moisture VCC
+    └── LDR VCC
+    
+    - Rail (GND) ←── ESP32 GND Pin
+    │
+    ├── DHT22 GND
+    ├── Soil Moisture GND
+    ├── LDR GND
+    ├── Relay GND
+    └── Pump GND (via adapter)
+```
+
+### External Power Circuit
+```
+Water Pump Power Circuit:
+    
+    USB 5V Adapter (4A)
+         │
+         ├─ RED (+5V) ──→ Relay COM
+         │
+         └─ BLACK (GND) ──→ Pump BLACK
+                          └──→ ESP32 GND (common ground)
+    
+    Relay Switching:
+         Relay NO ──→ Pump RED (+)
+         
+    When relay activates:
+         COM connects to NO → Pump receives power
+```
 ```
 
 ## 🏗️ System Architecture
