@@ -1,6 +1,6 @@
 {
   "name": "smart-agriculture-backend",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Backend server for Smart Agriculture System with AI",
   "main": "server.js",
   "scripts": {
