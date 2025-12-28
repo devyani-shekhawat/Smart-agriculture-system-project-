@@ -149,9 +149,9 @@ Water Pump Circuit:
 ## 🚀 Deployment
 
 ### Live URLs
-- **Dashboard:** `https://YOUR-USERNAME.github.io/smart-agriculture-system/`
-- **Backend API:** `https://smart-agriculture-system-project.vercel.app`
-- **API Health Check:** `https://smart-agriculture-system-project.vercel.app/api`
+- **Dashboard:** https://devyani-shekhawat.github.io/smart-agriculture-system/
+- **Backend API:** https://smart-agriculture-system-project.vercel.app
+- **API Health Check:** https://smart-agriculture-system-project.vercel.app/api
 
 ### Environment Variables (Backend - Vercel)
 ```
@@ -236,7 +236,7 @@ Response:
 ### Run Dashboard Locally
 ```bash
 # Clone repository
-git clone https://github.com/YOUR-USERNAME/smart-agriculture-system.git
+git clone https://github.com/devyani-shekhawat/smart-agriculture-system.git
 
 # Open with Live Server (VS Code extension)
 # Or use Python HTTP server:
