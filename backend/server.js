@@ -4,7 +4,6 @@ const cors = require('cors');
 const Groq = require('groq-sdk');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 // Initialize Groq
 const groq = new Groq({
@@ -18,6 +17,10 @@ app.use(express.json());
 // Health check endpoint
 app.get('/', (req, res) => {
     res.json({ status: 'Smart Agriculture AI Backend is running with Groq!' });
+});
+
+app.get('/api', (req, res) => {
+    res.json({ status: 'API endpoint is working!' });
 });
 
 // AI Chat endpoint
@@ -74,8 +77,5 @@ Provide concise, helpful advice based on the current sensor data. Be friendly an
     }
 });
 
-// Start server
-app.listen(PORT, () => {
-    console.log(`🚀 Backend server running on http://localhost:${PORT}`);
-    console.log(`✅ Groq AI configured (FREE!)`);
-});
+// Export for Vercel serverless
+module.exports = app;
