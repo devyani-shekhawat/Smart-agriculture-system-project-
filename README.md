@@ -2,7 +2,7 @@
 
 An IoT-based automated plant monitoring system with real-time sensor data visualization and AI-powered plant health analysis.
 
-## 🌱 Project Overview
+## Project Overview
 
 This project demonstrates a complete IoT solution for smart agriculture, featuring:
 - Real-time environmental monitoring (temperature, humidity, soil moisture, light)
@@ -11,7 +11,7 @@ This project demonstrates a complete IoT solution for smart agriculture, featuri
 - AI chatbot for plant health consultation
 - Scalable architecture for agricultural automation
 
-## 🔧 Hardware Components
+## Hardware Components
 
 ### Microcontroller
 - **ESP32 DevKit V1** (Type-C)
@@ -41,182 +41,87 @@ This project demonstrates a complete IoT solution for smart agriculture, featuri
 - ESP32: USB 5V
 - Water Pump: External 5V 4A adapter (isolated from microcontroller)
 
-## 🔌 Wiring Diagram
-```
-Power Rails (Breadboard):
-- ESP32 3.3V → + rail
-- ESP32 GND → - rail
+## Complete Wiring Diagram
 
-DHT22:
-- VCC → + rail (3.3V)
-- DATA → D13
-- GND → - rail
-
-Soil Moisture Sensor:
-- VCC → + rail
-- AOUT → D34
-- GND → - rail
-
-LDR Module:
-- VCC → + rail
-- DO → D35
-- GND → - rail
-
-Relay Module:
-- VCC → ESP32 VIN (5V) *NOT 3.3V*
-- IN → D4
-- GND → - rail
-
-Water Pump Circuit:
-- USB Adapter RED (+) → Relay COM
-- Relay NO → Pump RED (+)
-- Pump BLACK (-) → USB Adapter BLACK (-)
-- USB BLACK also connected to ESP32 GND (common ground)
-## 📍 Complete Pin Diagram
-
-### ESP32 Pin Connections
-```
-ESP32 DevKit V1 Pin Layout:
-                    ┌─────────────────┐
-                    │                 │
-              EN ───┤                 ├─── D23
-             VP/36──┤                 ├─── D22
-             VN/39──┤                 ├─── TX0
-              D34───┤   ●       ●     ├─── RX0
-              D35───┤                 ├─── D21
-              D32───┤                 ├─── D19
-              D33───┤                 ├─── D18
-              D25───┤                 ├─── D5
-              D26───┤                 ├─── D17
-              D27───┤   ESP32         ├─── D16
-              D14───┤   DevKit        ├─── D4  
-              D12───┤     V1          ├─── D0
-              D13───┤                 ├─── D2
-              GND───┤                 ├─── D15
-              VIN───┤                 ├─── GND
-                    │                 │
-             3.3V───┤                 ├─── 3.3V
-              GND───┤                 ├─── GND
-                    └─────────────────┘
-                         USB-C
-```
-
-### Sensor Wiring Table
+### Sensor Connections Table
 
 | Component | Component Pin | ESP32 Pin | Notes |
 |-----------|---------------|-----------|-------|
-| **DHT22** | VCC | 3.3V rail | Temperature & Humidity |
+| **Power Distribution** | | | |
+| ESP32 | 3.3V | Breadboard + rail | Powers all sensors |
+| ESP32 | GND | Breadboard - rail | Common ground |
+| | | | |
+| **DHT22** | VCC | + rail (3.3V) | Temperature & Humidity |
 | | DATA | D13 | GPIO 13 |
-| | GND | GND rail | |
-| **Soil Moisture** | VCC | 3.3V rail | Capacitive sensor |
+| | GND | - rail | |
+| | | | |
+| **Soil Moisture** | VCC | + rail (3.3V) | Capacitive sensor |
 | | AOUT | D34 | Analog input |
-| | GND | GND rail | |
-| **LDR Module** | VCC | 3.3V rail | Light sensor |
+| | GND | - rail | |
+| | | | |
+| **LDR Module** | VCC | + rail (3.3V) | Light sensor |
 | | DO | D35 | Digital output |
-| | GND | GND rail | |
-| **Relay Module** | VCC | VIN | **5V required!** |
+| | GND | - rail | |
+| | | | |
+| **Relay Module** | VCC | ESP32 VIN | **5V required, not 3.3V** |
 | | IN | D4 | Control signal |
-| | GND | GND rail | Common ground |
-| **Water Pump** | + (RED) | Relay NO | Via relay |
-| | - (BLACK) | Adapter GND | Common ground |
+| | GND | - rail | Common ground |
+| | | | |
+| **Water Pump** | RED (+) | Relay NO | Via relay switching |
+| | BLACK (-) | Adapter GND | Common ground |
+| USB Adapter | RED (+5V) | Relay COM | 5V 4A power supply |
+| | BLACK (GND) | Pump & ESP32 GND | **Common ground critical** |
 
-### Breadboard Power Distribution
-```
-Breadboard Layout:
-    
-    + Rail (3.3V) ←── ESP32 3.3V Pin
-    │
-    ├── DHT22 VCC
-    ├── Soil Moisture VCC
-    └── LDR VCC
-    
-    - Rail (GND) ←── ESP32 GND Pin
-    │
-    ├── DHT22 GND
-    ├── Soil Moisture GND
-    ├── LDR GND
-    ├── Relay GND
-    └── Pump GND (via adapter)
-```
+### Critical Wiring Notes
+- Relay VCC must connect to VIN (5V), not 3.3V rail
+- Common ground between ESP32 and external pump power is mandatory
+- LDR has inverted logic (higher values = darker)
+- Soil sensor: lower values = wetter soil
 
-### External Power Circuit
+## System Architecture
 ```
-Water Pump Power Circuit:
-    
-    USB 5V Adapter (4A)
-         │
-         ├─ RED (+5V) ──→ Relay COM
-         │
-         └─ BLACK (GND) ──→ Pump BLACK
-                          └──→ ESP32 GND (common ground)
-    
-    Relay Switching:
-         Relay NO ──→ Pump RED (+)
-         
-    When relay activates:
-         COM connects to NO → Pump receives power
-```
+ESP32 + Sensors
+       ↓
+    WiFi (2.4GHz)
+       ↓
+  Blynk Cloud Database
+       ↓
+    REST API
+       ↓
+Web Dashboard (GitHub Pages)
+       ↓
+     HTTPS
+       ↓
+Backend Server (Vercel)
+       ↓
+    API Call
+       ↓
+ Groq AI API (Llama Model)
 ```
 
-## 🏗️ System Architecture
-```
-┌─────────────┐
-│   ESP32     │
-│  + Sensors  │
-└──────┬──────┘
-       │
-       │ WiFi (2.4GHz)
-       ↓
-┌─────────────┐
-│ Blynk Cloud │
-│  Database   │
-└──────┬──────┘
-       │
-       │ REST API
-       ↓
-┌──────────────────┐
-│  Web Dashboard   │ ← User accesses via browser
-│  (GitHub Pages)  │
-└──────┬───────────┘
-       │
-       │ HTTPS
-       ↓
-┌──────────────────┐
-│ Backend Server   │
-│    (Vercel)      │
-└──────┬───────────┘
-       │
-       │ API Call
-       ↓
-┌──────────────────┐
-│   Groq AI API    │
-│  (Llama Model)   │
-└──────────────────┘
-```
-
-## 💻 Software Stack
+## Software Stack
 
 ### Firmware (ESP32)
 - **Language:** C++ (Arduino Framework)
 - **IDE:** Arduino IDE 1.8.19
 - **Libraries:**
-  - `DHT sensor library` by Adafruit
-  - `Blynk` by Volodymyr Shymanskyy
+  - DHT sensor library by Adafruit
+  - Blynk by Volodymyr Shymanskyy
 - **Board Manager:** ESP32 by Espressif Systems
 
 ### Frontend (Dashboard)
 - **HTML5** - Structure
 - **CSS3** - Futuristic UI with animations, glassmorphism, particle effects
-- **JavaScript (Vanilla)** - Data fetching, real-time updates, chart rendering
+- **JavaScript** - Data fetching, real-time updates, chart rendering
 - **Hosting:** GitHub Pages
 
 ### Backend (AI Server)
 - **Runtime:** Node.js 24.x
 - **Framework:** Express.js
 - **Dependencies:**
-  - `express` - Web server
-  - `cors` - Cross-origin requests
-  - `groq-sdk` - AI integration
+  - express - Web server
+  - cors - Cross-origin requests
+  - groq-sdk - AI integration
 - **Hosting:** Vercel (serverless functions)
 
 ### Cloud Services
@@ -230,7 +135,7 @@ Water Pump Power Circuit:
    - Model: Llama 3.3 70B
    - Real-time plant health analysis
 
-## 🚀 Deployment
+## Deployment
 
 ### Live URLs
 - **Dashboard:** https://devyani-shekhawat.github.io/smart-agriculture-system/
@@ -242,18 +147,18 @@ Water Pump Power Circuit:
 GROQ_API_KEY=your_groq_api_key_here
 ```
 
-## 📊 Features
+## Features
 
 ### Real-time Monitoring
-- **Auto-refresh:** Every 5 seconds
-- **Live indicators:** Animated update notifications
-- **Historical graphs:** 20-point rolling charts for soil and light
+- Auto-refresh every 5 seconds
+- Live update indicators with animations
+- Historical graphs with 20-point rolling data for soil and light
 
 ### Visual Feedback
-- **Circular progress rings** for temperature/humidity
-- **Color-coded alerts** (green/yellow/red) for soil moisture
-- **Animated particle background** for aesthetic appeal
-- **Glassmorphism cards** with hover effects
+- Circular progress rings for temperature and humidity
+- Color-coded alerts (green/yellow/red) for soil moisture
+- Animated particle background
+- Glassmorphism card effects with hover animations
 
 ### AI Plant Assistant
 - Context-aware responses based on real sensor data
@@ -261,7 +166,7 @@ GROQ_API_KEY=your_groq_api_key_here
 - Watering schedule guidance
 - Environmental optimization tips
 
-## 🔑 API Endpoints
+## API Endpoints
 
 ### Blynk API (Data Retrieval)
 ```
@@ -297,7 +202,7 @@ Response:
 }
 ```
 
-## 🛠️ Local Development
+## Local Development
 
 ### ESP32 Firmware Upload
 
@@ -311,8 +216,7 @@ Response:
    - Board: ESP32 Dev Module
    - Upload Speed: 115200
    - Port: COM3 (Windows) or /dev/ttyUSB0 (Linux)
-
-5. Install libraries via Library Manager
+5. Install required libraries via Library Manager
 6. Update WiFi credentials in code
 7. Update Blynk auth token
 8. Upload sketch
@@ -339,48 +243,48 @@ node api/index.js
 # Server runs on http://localhost:3000
 ```
 
-## 📈 Performance Metrics
+## Performance Metrics
 
-- **Sensor Reading Frequency:** Every 5 seconds
-- **Dashboard Update Latency:** < 1 second
-- **AI Response Time:** 2-4 seconds
-- **Uptime:** 99.9% (cloud-based)
-- **Data Points per Day:** 17,280 readings
+- Sensor Reading Frequency: Every 5 seconds
+- Dashboard Update Latency: < 1 second
+- AI Response Time: 2-4 seconds
+- Uptime: 99.9% (cloud-based)
+- Data Points per Day: 17,280 readings
 
-## 🔒 Security Considerations
+## Security Considerations
 
 - Blynk auth token: Read-only access (data retrieval only, no device control)
 - Groq API key: Stored as environment variable on Vercel
 - CORS enabled for dashboard domain
 - HTTPS enforced for all communications
 
-## 🐛 Known Issues & Limitations
+## Known Issues and Limitations
 
 1. **Relay Control:** Relay module not clicking reliably - pump control deferred for future work
 2. **Browser Compatibility:** Tested on Chrome/Edge, may have issues on Safari
 3. **API Rate Limits:** Groq free tier has rate limits
 4. **Sensor Calibration:** Soil moisture thresholds are empirical, not factory-calibrated
 
-## 🔮 Future Enhancements
+## Future Enhancements
 
-- [ ] Implement automated watering based on soil threshold
-- [ ] Add SMS/email notifications for critical alerts
-- [ ] Historical data visualization (7-day/30-day trends)
-- [ ] Multi-plant support with plant profiles
-- [ ] Mobile app (React Native)
-- [ ] Machine learning for predictive watering schedules
+- Implement automated watering based on soil threshold
+- Add SMS/email notifications for critical alerts
+- Historical data visualization (7-day/30-day trends)
+- Multi-plant support with plant profiles
+- Mobile app (React Native)
+- Machine learning for predictive watering schedules
 
-## 👨‍💻 Author
+## Author
 
 **Devyani Shekhawat**
 - IoT Agriculture Automation Project
 - December 2025
 
-## 📝 License
+## License
 
 This project is for educational purposes.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Blynk IoT Platform for cloud infrastructure
 - Groq for free AI inference API
