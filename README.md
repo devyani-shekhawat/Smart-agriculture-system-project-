@@ -72,11 +72,6 @@ This project demonstrates a complete IoT solution for smart agriculture, featuri
 | USB Adapter | RED (+5V) | Relay COM | 5V 4A power supply |
 | | BLACK (GND) | Pump & ESP32 GND | **Common ground critical** |
 
-### Critical Wiring Notes
-- Relay VCC must connect to VIN (5V), not 3.3V rail
-- Common ground between ESP32 and external pump power is mandatory
-- LDR has inverted logic (higher values = darker)
-- Soil sensor: lower values = wetter soil
 
 ## System Architecture
 ```
@@ -153,12 +148,6 @@ GROQ_API_KEY=your_groq_api_key_here
 - Auto-refresh every 5 seconds
 - Live update indicators with animations
 - Historical graphs with 20-point rolling data for soil and light
-
-### Visual Feedback
-- Circular progress rings for temperature and humidity
-- Color-coded alerts (green/yellow/red) for soil moisture
-- Animated particle background
-- Glassmorphism card effects with hover animations
 
 ### AI Plant Assistant
 - Context-aware responses based on real sensor data
@@ -250,13 +239,6 @@ node api/index.js
 - AI Response Time: 2-4 seconds
 - Uptime: 99.9% (cloud-based)
 - Data Points per Day: 17,280 readings
-
-## Security Considerations
-
-- Blynk auth token: Read-only access (data retrieval only, no device control)
-- Groq API key: Stored as environment variable on Vercel
-- CORS enabled for dashboard domain
-- HTTPS enforced for all communications
 
 ## Known Issues and Limitations
 
