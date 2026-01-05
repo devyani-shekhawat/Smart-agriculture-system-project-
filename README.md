@@ -138,7 +138,7 @@ Backend Server (Vercel)
 ## Deployment
 
 ### Live URLs
-- **Dashboard:** https://devyani-shekhawat.github.io/smart-agriculture-system/
+- **Dashboard:[main link]** https://devyani-shekhawat.github.io/Smart-agriculture-system-project-/
 - **Backend API:** https://smart-agriculture-system-project.vercel.app
 - **API Health Check:** https://smart-agriculture-system-project.vercel.app/api
 
