@@ -81,31 +81,34 @@ window.addEventListener('resize', () => {
     canvas.height = window.innerHeight;
 });
 
-// 3D Tilt Effect for Cards
+// Add 3D tilt to cartoon diagram
 document.addEventListener('DOMContentLoaded', () => {
-    const tiltCards = document.querySelectorAll('[data-tilt]');
+    const cartoon = document.querySelector('.cartoon-diagram');
     
-    tiltCards.forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
+    if (cartoon) {
+        cartoon.addEventListener('mousemove', (e) => {
+            const rect = cartoon.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
             
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
             
-            const rotateX = (y - centerY) / 10;
-            const rotateY = (centerX - x) / 10;
+            const rotateX = (y - centerY) / 15;
+            const rotateY = (centerX - x) / 15;
             
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
+            cartoon.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.03, 1.03, 1.03)`;
         });
         
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+        cartoon.addEventListener('mouseleave', () => {
+            cartoon.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
         });
-    });
+    }
+    
+    // Existing tilt cards code continues...
+    const tiltCards = document.querySelectorAll('[data-tilt]');
+    // ... rest of your existing code
 });
-
 // Scroll-triggered animations with Intersection Observer
 const observerOptions = {
     threshold: 0.1,
@@ -473,3 +476,4 @@ async function handleSendMessage() {
     
     input.focus();
 }
+
