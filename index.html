@@ -16,12 +16,113 @@
     <div class="shooting-star"></div>
 
     <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <h1 class="hero-title gradient-text">Smart Agriculture System</h1>
-            <p class="hero-subtitle">AI-powered plant health monitoring</p>
+    <!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <h1 class="hero-title gradient-text">Smart Agriculture System</h1>
+        <p class="hero-subtitle">AI-powered plant health monitoring</p>
+        
+        <!-- Animated Cartoon Diagram -->
+        <div class="cartoon-diagram">
+            <svg viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+                <!-- Plant in pot -->
+                <g class="plant-group">
+                    <rect x="30" y="220" width="80" height="60" rx="5" fill="#8B4513" class="pot"/>
+                    <path d="M 50 220 Q 45 180 50 160 Q 55 180 60 160 Q 65 180 70 220" fill="#30D158" class="leaf leaf-1"/>
+                    <path d="M 70 210 Q 75 170 80 150 Q 85 170 90 150 Q 95 170 100 210" fill="#30D158" class="leaf leaf-2"/>
+                    <circle cx="70" cy="155" r="8" fill="#FFD60A" class="flower"/>
+                    <circle cx="90" cy="145" r="8" fill="#FFD60A" class="flower"/>
+                    <!-- Sensors on plant -->
+                    <rect x="85" y="190" width="25" height="15" rx="3" fill="#A78BFA" class="sensor-box pulse"/>
+                    <circle cx="97" cy="197" r="3" fill="#30D158" class="sensor-light blink"/>
+                </g>
+                
+                <!-- Data Flow Arrow 1 -->
+                <g class="flow-line">
+                    <path d="M 130 200 L 200 200" stroke="#A78BFA" stroke-width="3" stroke-dasharray="5,5" class="data-flow flow-1"/>
+                    <polygon points="200,195 210,200 200,205" fill="#A78BFA"/>
+                </g>
+                
+                <!-- ESP32 Chip -->
+                <g class="esp32-group">
+                    <rect x="220" y="170" width="100" height="60" rx="8" fill="#2C2C2E" stroke="#A78BFA" stroke-width="2"/>
+                    <text x="270" y="195" text-anchor="middle" fill="#F5F5F7" font-size="12" font-weight="bold">ESP32</text>
+                    <text x="270" y="210" text-anchor="middle" fill="#86868B" font-size="10">WiFi</text>
+                    <!-- Blinking LED -->
+                    <circle cx="245" cy="220" r="4" fill="#30D158" class="led-indicator blink-fast"/>
+                    <circle cx="260" cy="220" r="4" fill="#FFD60A" class="led-indicator blink-slow"/>
+                    <circle cx="275" cy="220" r="4" fill="#FF453A" class="led-indicator blink-fast"/>
+                    <!-- Antenna waves -->
+                    <path d="M 290 180 Q 300 175 310 180" stroke="#A78BFA" stroke-width="2" fill="none" class="wave wave-1"/>
+                    <path d="M 290 185 Q 305 180 320 185" stroke="#A78BFA" stroke-width="2" fill="none" class="wave wave-2"/>
+                </g>
+                
+                <!-- Data Flow Arrow 2 -->
+                <g class="flow-line">
+                    <path d="M 330 200 L 400 150" stroke="#A78BFA" stroke-width="3" stroke-dasharray="5,5" class="data-flow flow-2"/>
+                    <polygon points="397,145 407,148 400,155" fill="#A78BFA"/>
+                </g>
+                
+                <!-- Cloud -->
+                <g class="cloud-group">
+                    <ellipse cx="450" cy="100" rx="35" ry="25" fill="#86868B" opacity="0.3"/>
+                    <ellipse cx="470" cy="95" rx="40" ry="30" fill="#86868B" opacity="0.3"/>
+                    <ellipse cx="490" cy="100" rx="35" ry="25" fill="#86868B" opacity="0.3"/>
+                    <ellipse cx="470" cy="110" rx="50" ry="20" fill="#86868B" opacity="0.3"/>
+                    <text x="470" y="108" text-anchor="middle" fill="#F5F5F7" font-size="14" font-weight="bold">Blynk</text>
+                    <!-- Data particles in cloud -->
+                    <circle cx="445" cy="95" r="3" fill="#A78BFA" class="data-particle particle-1"/>
+                    <circle cx="470" cy="90" r="3" fill="#C4B5FD" class="data-particle particle-2"/>
+                    <circle cx="495" cy="95" r="3" fill="#A78BFA" class="data-particle particle-3"/>
+                </g>
+                
+                <!-- Data Flow Arrow 3 -->
+                <g class="flow-line">
+                    <path d="M 510 120 L 560 180" stroke="#A78BFA" stroke-width="3" stroke-dasharray="5,5" class="data-flow flow-3"/>
+                    <polygon points="557,175 565,183 552,185" fill="#A78BFA"/>
+                </g>
+                
+                <!-- Dashboard Screen -->
+                <g class="dashboard-group">
+                    <rect x="570" y="170" width="90" height="60" rx="5" fill="#1C1C1E" stroke="#A78BFA" stroke-width="2"/>
+                    <rect x="575" y="175" width="80" height="45" rx="3" fill="#000000"/>
+                    <!-- Mini graph lines -->
+                    <polyline points="580,200 590,195 600,198 610,192 620,197 630,190 640,195 650,188" 
+                              stroke="#30D158" stroke-width="2" fill="none" class="mini-graph"/>
+                    <!-- Dashboard dots -->
+                    <circle cx="590" cy="210" r="2" fill="#FFD60A"/>
+                    <circle cx="610" cy="210" r="2" fill="#30D158"/>
+                    <circle cx="630" cy="210" r="2" fill="#FF453A"/>
+                </g>
+                
+                <!-- Data Flow Arrow 4 -->
+                <g class="flow-line">
+                    <path d="M 615 240 L 615 270" stroke="#A78BFA" stroke-width="3" stroke-dasharray="5,5" class="data-flow flow-4"/>
+                    <polygon points="610,270 615,280 620,270" fill="#A78BFA"/>
+                </g>
+                
+                <!-- AI Brain -->
+                <g class="ai-group">
+                    <ellipse cx="615" cy="260" rx="40" ry="30" fill="#8B5CF6" opacity="0.3" class="brain-glow"/>
+                    <path d="M 590 250 Q 595 235 605 235 Q 615 235 625 235 Q 635 235 640 250 Q 640 265 625 270 Q 615 273 605 270 Q 595 268 590 265 Z" 
+                          fill="#A78BFA" stroke="#C4B5FD" stroke-width="2"/>
+                    <text x="615" y="263" text-anchor="middle" fill="#000000" font-size="16" font-weight="bold">AI</text>
+                    <!-- Thinking particles -->
+                    <circle cx="595" cy="245" r="2" fill="#F5F5F7" class="think-particle think-1"/>
+                    <circle cx="615" cy="240" r="2" fill="#F5F5F7" class="think-particle think-2"/>
+                    <circle cx="635" cy="245" r="2" fill="#F5F5F7" class="think-particle think-3"/>
+                </g>
+                
+                <!-- Labels -->
+                <text x="70" y="295" text-anchor="middle" fill="#86868B" font-size="11">Sensors</text>
+                <text x="270" y="250" text-anchor="middle" fill="#86868B" font-size="11">Process</text>
+                <text x="470" y="140" text-anchor="middle" fill="#86868B" font-size="11">Store</text>
+                <text x="615" y="155" text-anchor="middle" fill="#86868B" font-size="11">Visualize</text>
+                <text x="615" y="295" text-anchor="middle" fill="#86868B" font-size="11">Analyze</text>
+            </svg>
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- Live Sensor Data - FIRST! -->
     <section class="sensor-section">
@@ -224,3 +325,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+
