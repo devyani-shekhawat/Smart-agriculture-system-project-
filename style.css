@@ -965,3 +965,225 @@ section {
         padding: 40px 30px;
     }
 }
+
+/* Animated Cartoon Diagram */
+.cartoon-diagram {
+    margin-top: 80px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cartoon-diagram svg {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 10px 40px rgba(167, 139, 250, 0.3));
+}
+
+/* Plant animations */
+.leaf {
+    animation: leafSway 3s ease-in-out infinite;
+    transform-origin: bottom center;
+}
+
+.leaf-1 {
+    animation-delay: 0s;
+}
+
+.leaf-2 {
+    animation-delay: 0.5s;
+}
+
+@keyframes leafSway {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(5deg); }
+}
+
+.flower {
+    animation: flowerBounce 2s ease-in-out infinite;
+}
+
+@keyframes flowerBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* Sensor box pulse */
+.sensor-box {
+    animation: sensorPulse 2s ease-in-out infinite;
+}
+
+@keyframes sensorPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* LED indicators */
+.blink {
+    animation: blink 1s ease-in-out infinite;
+}
+
+.blink-fast {
+    animation: blink 0.8s ease-in-out infinite;
+}
+
+.blink-slow {
+    animation: blink 1.5s ease-in-out infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* WiFi waves */
+.wave {
+    animation: waveExpand 2s ease-in-out infinite;
+    opacity: 0;
+}
+
+.wave-1 {
+    animation-delay: 0s;
+}
+
+.wave-2 {
+    animation-delay: 0.5s;
+}
+
+@keyframes waveExpand {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(1.2);
+    }
+}
+
+/* Data flow animations */
+.data-flow {
+    stroke-dashoffset: 100;
+    animation: dataFlowing 3s linear infinite;
+}
+
+.flow-1 { animation-delay: 0s; }
+.flow-2 { animation-delay: 0.5s; }
+.flow-3 { animation-delay: 1s; }
+.flow-4 { animation-delay: 1.5s; }
+
+@keyframes dataFlowing {
+    0% {
+        stroke-dashoffset: 100;
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        stroke-dashoffset: 0;
+        opacity: 0.3;
+    }
+}
+
+/* Cloud data particles */
+.data-particle {
+    animation: particleFloat 4s ease-in-out infinite;
+}
+
+.particle-1 { animation-delay: 0s; }
+.particle-2 { animation-delay: 1s; }
+.particle-3 { animation-delay: 2s; }
+
+@keyframes particleFloat {
+    0%, 100% {
+        transform: translateY(0);
+        opacity: 0.3;
+    }
+    50% {
+        transform: translateY(-10px);
+        opacity: 1;
+    }
+}
+
+/* Mini graph animation */
+.mini-graph {
+    animation: graphPulse 3s ease-in-out infinite;
+}
+
+@keyframes graphPulse {
+    0%, 100% {
+        stroke-dasharray: 100;
+        stroke-dashoffset: 0;
+    }
+    50% {
+        stroke-dasharray: 100;
+        stroke-dashoffset: 50;
+    }
+}
+
+/* Brain glow */
+.brain-glow {
+    animation: brainGlow 2s ease-in-out infinite;
+}
+
+@keyframes brainGlow {
+    0%, 100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scale(1.1);
+    }
+}
+
+/* Thinking particles */
+.think-particle {
+    animation: thinkFloat 2s ease-in-out infinite;
+}
+
+.think-1 { animation-delay: 0s; }
+.think-2 { animation-delay: 0.3s; }
+.think-3 { animation-delay: 0.6s; }
+
+@keyframes thinkFloat {
+    0% {
+        opacity: 0;
+        transform: translateY(0);
+    }
+    50% {
+        opacity: 1;
+        transform: translateY(-15px);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+}
+
+/* Fix gradient animation to be smoother */
+.gradient-text {
+    background: linear-gradient(90deg, 
+        #A78BFA 0%, 
+        #FFFFFF 20%, 
+        #C4B5FD 40%, 
+        #FFFFFF 60%, 
+        #8B5CF6 80%,
+        #A78BFA 100%
+    );
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientFlow 8s linear infinite;
+}
+
+@keyframes gradientFlow {
+    0% { background-position: 0% center; }
+    100% { background-position: 300% center; }
+}
