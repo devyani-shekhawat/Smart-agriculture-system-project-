@@ -1166,4 +1166,26 @@ section {
         padding: 40px 30px;
     }
 }
+/* Blur sections as you scroll past them */
+section {
+    transition: filter 0.3s ease;
+}
+
+body.scrolling .hero,
+body.scrolling .sensor-section,
+body.scrolling .system-architecture,
+body.scrolling .how-it-works {
+    filter: blur(0px);
+}
+
+/* Current section stays sharp, others blur slightly */
+section:not(.in-view) {
+    filter: blur(2px);
+    opacity: 0.7;
+}
+
+section.in-view {
+    filter: blur(0px);
+    opacity: 1;
+}
 
