@@ -1,8 +1,6 @@
-// Blynk Configuration
+// Blynk Config
 const BLYNK_AUTH_TOKEN = 'zJyWLMuWEs-17kEsSu4HZURmfGFNUIiC';
 const BLYNK_SERVER = 'https://blynk.cloud';
-
-// Virtual Pin Mapping
 const PINS = {
     TEMPERATURE: 'V0',
     HUMIDITY: 'V1',
@@ -10,38 +8,64 @@ const PINS = {
     LIGHT: 'V3'
 };
 
-// Data history for mini graphs
+// Data history
 let soilHistory = [];
 let lightHistory = [];
 
-// Initialize
-document.addEventListener('DOMContentLoaded', () => {
-    createParticles();
-    fetchData();
-    setInterval(fetchData, 5000); // Update every 5 seconds
-});
+// Typing Animation
+const demoQuestions = [
+    "Does my plant need water?",
+    "Is the temperature too high?",
+    "When should I water next?",
+    "Is there enough light?"
+];
 
-// Create animated particles
-function createParticles() {
-    const particlesContainer = document.getElementById('particles');
-    for(let i = 0; i < 60; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.top = Math.random() * 100 + '%';
-        particle.style.animationDelay = Math.random() * 20 + 's';
-        particle.style.animationDuration = (15 + Math.random() * 10) + 's';
-        particlesContainer.appendChild(particle);
+let currentQuestionIndex = 0;
+let currentCharIndex = 0;
+let isDeleting = false;
+
+function typeQuestion() {
+    const typingDemo = document.getElementById('typingDemo');
+    const currentQuestion = demoQuestions[currentQuestionIndex];
+    
+    if (!isDeleting && currentCharIndex < currentQuestion.length) {
+        typingDemo.textContent = currentQuestion.substring(0, currentCharIndex + 1);
+        currentCharIndex++;
+        setTimeout(typeQuestion, 80);
+    } else if (isDeleting && currentCharIndex > 0) {
+        typingDemo.textContent = currentQuestion.substring(0, currentCharIndex - 1);
+        currentCharIndex--;
+        setTimeout(typeQuestion, 40);
+    } else if (!isDeleting && currentCharIndex === currentQuestion.length) {
+        setTimeout(() => {
+            isDeleting = true;
+            typeQuestion();
+        }, 2000);
+    } else if (isDeleting && currentCharIndex === 0) {
+        isDeleting = false;
+        currentQuestionIndex = (currentQuestionIndex + 1) % demoQuestions.length;
+        setTimeout(typeQuestion, 500);
     }
 }
 
-// Fetch data from Blynk
-async function fetchData() {
-    const indicator = document.getElementById('updateIndicator');
-    indicator.classList.add('active');
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    fetchData();
+    setInterval(fetchData, 5000);
+    typeQuestion();
     
+    const sendBtn = document.getElementById('sendBtn');
+    const chatInput = document.getElementById('chatInput');
+    
+    sendBtn.addEventListener('click', handleSendMessage);
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleSendMessage();
+    });
+});
+
+// Fetch Data
+async function fetchData() {
     try {
-        // Fetch all sensor values
         const [temp, humid, soil, light] = await Promise.all([
             getBlynkValue(PINS.TEMPERATURE),
             getBlynkValue(PINS.HUMIDITY),
@@ -49,148 +73,84 @@ async function fetchData() {
             getBlynkValue(PINS.LIGHT)
         ]);
         
-        // Update display
         updateDisplay(temp, humid, soil, light);
         
-        // Update status
         document.getElementById('systemStatus').textContent = 'ONLINE';
         document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
-        
     } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error:', error);
         document.getElementById('systemStatus').textContent = 'ERROR';
     }
-    
-    setTimeout(() => indicator.classList.remove('active'), 1000);
 }
 
-// Get value from Blynk API
 async function getBlynkValue(pin) {
     const url = `${BLYNK_SERVER}/external/api/get?token=${BLYNK_AUTH_TOKEN}&${pin}`;
     const response = await fetch(url);
-    const value = await response.text();
-    return parseFloat(value);
+    return parseFloat(await response.text());
 }
 
-// Update display with new data
 function updateDisplay(temp, humid, soil, light) {
-    // Temperature
-    const tempElement = document.getElementById('temp');
-    tempElement.textContent = temp.toFixed(1);
-    tempElement.classList.add('updating');
-    setTimeout(() => tempElement.classList.remove('updating'), 500);
-    updateProgress('tempProgress', 'tempPercent', temp, 50);
-    
-    // Humidity
-    const humidElement = document.getElementById('humid');
-    humidElement.textContent = humid.toFixed(1);
-    humidElement.classList.add('updating');
-    setTimeout(() => humidElement.classList.remove('updating'), 500);
-    updateProgress('humidProgress', 'humidPercent', humid, 100);
-    
-    // Soil Moisture
-    const soilElement = document.getElementById('soil');
-    soilElement.textContent = Math.round(soil);
-    soilElement.classList.add('updating');
-    setTimeout(() => soilElement.classList.remove('updating'), 500);
+    document.getElementById('temp').textContent = temp.toFixed(1);
+    document.getElementById('humid').textContent = humid.toFixed(1);
+    document.getElementById('soil').textContent = Math.round(soil);
+    document.getElementById('light').textContent = Math.round(light);
     
     const soilStatus = getSoilStatus(soil);
-    document.getElementById('soilStatus').textContent = soilStatus;
-    
-    // Update soil graph
-    soilHistory.push(soil);
-    if(soilHistory.length > 20) soilHistory.shift();
-    drawMiniGraph('soilGraph', soilHistory, '#00ff88');
-    
-    // Light Level
-    const lightElement = document.getElementById('light');
-    lightElement.textContent = Math.round(light);
-    lightElement.classList.add('updating');
-    setTimeout(() => lightElement.classList.remove('updating'), 500);
-    
     const lightStatus = getLightStatus(light);
-    document.getElementById('lightStatus').textContent = lightStatus;
     
-    // Update light graph
+    const soilStatusEl = document.getElementById('soilStatus');
+    soilStatusEl.textContent = soilStatus;
+    soilStatusEl.style.background = soil > 2500 ? '#FF453A' : soil > 1500 ? '#FFD60A' : '#30D158';
+    soilStatusEl.style.color = '#000000';
+    
+    const lightStatusEl = document.getElementById('lightStatus');
+    lightStatusEl.textContent = lightStatus;
+    lightStatusEl.style.background = light < 1000 ? '#FF453A' : light < 2500 ? '#FFD60A' : '#30D158';
+    lightStatusEl.style.color = '#000000';
+    
+    soilHistory.push(soil);
+    if (soilHistory.length > 20) soilHistory.shift();
+    
     lightHistory.push(light);
-    if(lightHistory.length > 20) lightHistory.shift();
-    drawMiniGraph('lightGraph', lightHistory, '#ffaa00');
+    if (lightHistory.length > 20) lightHistory.shift();
     
-    // Update alert box
-    updateAlert(soil);
+    drawGraph('soilGraph', soilHistory, '#30D158');
+    drawGraph('lightGraph', lightHistory, '#FFD60A');
 }
 
-// Update circular progress
-function updateProgress(circleId, textId, value, max) {
-    const circle = document.getElementById(circleId);
-    const text = document.getElementById(textId);
-    const circumference = 377;
-    const percent = (value / max) * 100;
-    const offset = circumference - (percent / 100) * circumference;
-    
-    circle.style.strokeDashoffset = offset;
-    text.textContent = Math.round(percent) + '%';
-}
-
-// Get soil moisture status
 function getSoilStatus(value) {
-    if(value > 2500) return 'DRY';
-    else if(value > 1500) return 'MOIST';
-    else return 'WET';
+    return value > 2500 ? 'DRY' : value > 1500 ? 'MOIST' : 'WET';
 }
 
-// Get light level status (FIXED - NOT inverted)
 function getLightStatus(value) {
-    if(value < 1000) return 'DARK';
-    else if(value < 2500) return 'DIM';
-    else return 'BRIGHT';
+    return value < 1000 ? 'DARK' : value < 2500 ? 'DIM' : 'BRIGHT';
 }
 
-// Update alert message
-function updateAlert(soilValue) {
-    const alertBox = document.getElementById('alertBox');
-    const alertText = document.getElementById('alertText');
-    
-    if(soilValue > 2500) {
-        alertBox.className = 'alert-box alert-dry';
-        alertText.textContent = 'IRRIGATION SYSTEM ACTIVATION REQUIRED';
-    } else {
-        alertBox.className = 'alert-box alert-ok';
-        alertText.textContent = 'OPTIMAL MOISTURE LEVELS - SYSTEM STANDBY';
-    }
-}
-
-// Draw mini graph
-function drawMiniGraph(canvasId, data, color) {
+function drawGraph(canvasId, data, color) {
     const canvas = document.getElementById(canvasId);
     const ctx = canvas.getContext('2d');
-    const width = canvas.width;
-    const height = canvas.height;
+    const width = canvas.width = canvas.offsetWidth * 2;
+    const height = canvas.height = 500;
     
-    // Clear canvas
     ctx.clearRect(0, 0, width, height);
     
-    if(data.length < 2) return;
+    if (data.length < 2) return;
     
-    // Find min/max for scaling
     const min = Math.min(...data);
     const max = Math.max(...data);
     const range = max - min || 1;
     
-    // Draw line
     ctx.beginPath();
     ctx.strokeStyle = color;
-    ctx.lineWidth = 2;
-    ctx.shadowBlur = 10;
-    ctx.shadowColor = color;
+    ctx.lineWidth = 4;
     
     const step = width / (data.length - 1);
     
     data.forEach((value, index) => {
         const x = index * step;
-        const y = height - ((value - min) / range) * (height - 10) - 5;
+        const y = height - ((value - min) / range) * (height - 60) - 30;
         
-        if(index === 0) {
+        if (index === 0) {
             ctx.moveTo(x, y);
         } else {
             ctx.lineTo(x, y);
@@ -198,78 +158,140 @@ function drawMiniGraph(canvasId, data, color) {
     });
     
     ctx.stroke();
-    
-    // Draw fill
-    ctx.lineTo(width, height);
-    ctx.lineTo(0, height);
-    ctx.closePath();
-    
-    const gradient = ctx.createLinearGradient(0, 0, 0, height);
-    gradient.addColorStop(0, color + '40');
-    gradient.addColorStop(1, color + '00');
-    ctx.fillStyle = gradient;
-    ctx.fill();
 }
 
-// ============================================
-// AI CHAT FUNCTIONALITY
-// ============================================
+// Modal Functions
+function openDetail(type) {
+    const modal = document.getElementById('detailModal');
+    const modalBody = document.getElementById('modalBody');
+    
+    const content = {
+        sensors: `
+            <h2>Sensor Monitoring System</h2>
+            <p>The system uses four specialized sensors to continuously monitor plant health:</p>
+            <ul>
+                <li><strong>DHT22 Temperature & Humidity Sensor:</strong> Tracks air temperature (°C) and relative humidity (%). Optimal range: 18-24°C, 40-60% humidity</li>
+                <li><strong>Capacitive Soil Moisture Sensor:</strong> Measures soil wetness levels (0-4095 scale). Values >2500 indicate dry soil needing water</li>
+                <li><strong>LDR Light Sensor:</strong> Detects ambient light levels. Basil plants need bright conditions (>2500 lux) for healthy growth</li>
+                <li><strong>5V Relay Module:</strong> Controls water pump for automated irrigation (currently in development)</li>
+            </ul>
+            <p>All sensors connect to the ESP32 microcontroller via GPIO pins and send readings every 5 seconds to ensure real-time monitoring.</p>
+        `,
+        cloud: `
+            <h2>Cloud Storage & Access</h2>
+            <p>Data flows seamlessly from your plant to the cloud:</p>
+            <ul>
+                <li><strong>ESP32 WiFi Connection:</strong> Microcontroller connects to 2.4GHz WiFi network and establishes secure connection to Blynk cloud</li>
+                <li><strong>Blynk IoT Platform:</strong> Industry-standard platform stores sensor readings in virtual pins (V0-V3) with 99.9% uptime</li>
+                <li><strong>REST API Access:</strong> Dashboard fetches latest data via secure HTTPS requests every 5 seconds</li>
+                <li><strong>Data Persistence:</strong> All readings are stored historically, enabling trend analysis and pattern detection</li>
+                <li><strong>Global Access:</strong> Check your plant's health from anywhere in the world with internet connection</li>
+            </ul>
+            <p>The cloud architecture ensures your data is always accessible, secure, and synchronized across all devices.</p>
+        `,
+        ai: `
+            <h2>AI-Powered Analysis</h2>
+            <p>Artificial intelligence transforms raw sensor data into actionable insights:</p>
+            <ul>
+                <li><strong>Groq AI Integration:</strong> Uses Meta's Llama 3.3 70B model for natural language understanding and plant care recommendations</li>
+                <li><strong>Context-Aware Responses:</strong> AI receives real-time sensor data with each query, providing advice specific to current conditions</li>
+                <li><strong>Pattern Recognition:</strong> Machine learning algorithms detect anomalies in sensor readings that may indicate stress or disease</li>
+                <li><strong>Predictive Analysis:</strong> System can forecast watering needs 24-48 hours in advance based on historical patterns</li>
+                <li><strong>Natural Language Interface:</strong> Simply ask questions in plain English - no technical knowledge required</li>
+            </ul>
+            <p>The AI backend runs on Vercel's serverless infrastructure, ensuring fast responses and scalability.</p>
+        `,
+        action: `
+            <h2>Simple Recommendations</h2>
+            <p>Get clear, actionable advice tailored to your plant:</p>
+            <ul>
+                <li><strong>Watering Guidance:</strong> AI tells you exactly when to water based on soil moisture, temperature, and humidity</li>
+                <li><strong>Light Optimization:</strong> Receive suggestions on moving your plant or adjusting grow lights</li>
+                <li><strong>Temperature Alerts:</strong> Get notified if conditions are too hot or cold for optimal growth</li>
+                <li><strong>Humidity Management:</strong> Learn when to mist your plant or use a humidifier</li>
+                <li><strong>Health Scoring:</strong> Understand overall plant health with easy-to-read metrics</li>
+            </ul>
+            <p>All recommendations are based on proven botanical research and real-time sensor data, ensuring your plant gets exactly what it needs.</p>
+        `,
+        disease: `
+            <h2>Future: AI Disease Detection</h2>
+            <p>The next evolution of this project will detect plant diseases before visible symptoms appear:</p>
+            <ul>
+                <li><strong>Micro-Pattern Analysis:</strong> Monitor subtle changes in soil moisture drying rates that indicate root problems or disease</li>
+                <li><strong>Computer Vision Integration:</strong> Add camera module to capture leaf images and detect discoloration, spots, or wilting</li>
+                <li><strong>Early Warning System:</strong> Predict disease 48-72 hours before symptoms are visible to human eye</li>
+                <li><strong>Disease Classification:</strong> Identify specific diseases (fungal, bacterial, pest-related) for targeted treatment</li>
+                <li><strong>Prevention Strategies:</strong> AI recommends environmental adjustments to prevent disease before it starts</li>
+                <li><strong>Research Applications:</strong> Collect data for agricultural research on disease patterns and prevention</li>
+            </ul>
+            <p>This research direction could save billions in crop losses globally and is being developed for ISEF 2027 competition.</p>
+        `,
+        automation: `
+            <h2>Future: Automated Plant Dome</h2>
+            <p>Vision for a fully autonomous plant care system that requires zero human intervention:</p>
+            <ul>
+                <li><strong>Controlled Environment:</strong> Sealed dome with AI-managed temperature, humidity, light, and watering</li>
+                <li><strong>Webcam Monitoring:</strong> Real-time visual analysis of plant health, detecting wilting, yellowing, or growth issues</li>
+                <li><strong>Automated Irrigation:</strong> Water pump activates based on AI decisions from sensor data and visual analysis</li>
+                <li><strong>Smart Lighting:</strong> LED grow lights adjust spectrum and duration based on plant growth stage and needs</li>
+                <li><strong>Climate Control:</strong> Humidifier/dehumidifier and heating/cooling maintain optimal conditions automatically</li>
+                <li><strong>Nutrient Delivery:</strong> Automated system adds fertilizer and nutrients based on plant requirements</li>
+                <li><strong>Complete Autonomy:</strong> Plant thrives for months without human care - perfect for long trips or research</li>
+            </ul>
+            <p>This system would demonstrate how AI can completely automate agriculture, potentially revolutionizing farming in harsh climates or even space exploration.</p>
+        `
+    };
+    
+    modalBody.innerHTML = content[type];
+    modal.style.display = 'block';
+}
 
-// Get current sensor data for AI context
+function closeDetail() {
+    document.getElementById('detailModal').style.display = 'none';
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById('detailModal');
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// AI Chat
 function getSensorContext() {
-    const tempElement = document.getElementById('temp');
-    const humidElement = document.getElementById('humid');
-    const soilElement = document.getElementById('soil');
-    const lightElement = document.getElementById('light');
-    
-    const temp = tempElement ? parseFloat(tempElement.textContent) : 0;
-    const humid = humidElement ? parseFloat(humidElement.textContent) : 0;
-    const soil = soilElement ? parseInt(soilElement.textContent) : 0;
-    const light = lightElement ? parseInt(lightElement.textContent) : 0;
-    
-    const soilStatus = getSoilStatus(soil);
-    const lightStatus = getLightStatus(light);
-    
     return {
-        temperature: temp,
-        humidity: humid,
-        soilMoisture: soil,
-        soilStatus: soilStatus,
-        lightLevel: light,
-        lightStatus: lightStatus
+        temperature: parseFloat(document.getElementById('temp').textContent) || 0,
+        humidity: parseFloat(document.getElementById('humid').textContent) || 0,
+        soilMoisture: parseInt(document.getElementById('soil').textContent) || 0,
+        soilStatus: document.getElementById('soilStatus').textContent,
+        lightLevel: parseInt(document.getElementById('light').textContent) || 0,
+        lightStatus: document.getElementById('lightStatus').textContent
     };
 }
 
-// Send message to backend server
 async function sendToAI(userMessage) {
     const sensorData = getSensorContext();
     
     try {
         const response = await fetch('https://smart-agriculture-system-project.vercel.app/api/chat', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 message: userMessage,
                 sensorData: sensorData
             })
         });
         
-        if (!response.ok) {
-            throw new Error('Backend request failed');
-        }
+        if (!response.ok) throw new Error('Backend failed');
         
         const data = await response.json();
         return data.response;
-        
     } catch (error) {
-        console.error('Error calling backend:', error);
-        return "Sorry, I'm having trouble connecting to the AI service. Please make sure the backend server is running.";
+        console.error('Error:', error);
+        return "Sorry, I'm having trouble connecting. Please try again.";
     }
 }
 
-// Add message to chat UI
 function addMessage(content, isUser = false) {
     const chatMessages = document.getElementById('chatMessages');
     
@@ -288,11 +310,9 @@ function addMessage(content, isUser = false) {
     messageDiv.appendChild(contentDiv);
     chatMessages.appendChild(messageDiv);
     
-    // Scroll to bottom
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-// Handle send button click
 async function handleSendMessage() {
     const input = document.getElementById('chatInput');
     const sendBtn = document.getElementById('sendBtn');
@@ -300,44 +320,21 @@ async function handleSendMessage() {
     const sendBtnLoader = document.getElementById('sendBtnLoader');
     
     const message = input.value.trim();
-    
     if (!message) return;
     
-    // Add user message
     addMessage(message, true);
     input.value = '';
     
-    // Disable button and show loader
     sendBtn.disabled = true;
     sendBtnText.style.display = 'none';
     sendBtnLoader.style.display = 'inline-block';
     
-    // Get AI response
     const response = await sendToAI(message);
-    
-    // Add bot response
     addMessage(response, false);
     
-    // Re-enable button
     sendBtn.disabled = false;
     sendBtnText.style.display = 'inline';
     sendBtnLoader.style.display = 'none';
     
     input.focus();
 }
-
-// Initialize chat functionality
-document.addEventListener('DOMContentLoaded', () => {
-    const sendBtn = document.getElementById('sendBtn');
-    const chatInput = document.getElementById('chatInput');
-    
-    if (sendBtn && chatInput) {
-        sendBtn.addEventListener('click', handleSendMessage);
-        
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                handleSendMessage();
-            }
-        });
-    }
-});
