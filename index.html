@@ -7,136 +7,219 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="particles" id="particles"></div>
-    <div class="scan-line"></div>
+    <!-- Background Animation Layer -->
+    <div class="bg-animation"></div>
     
-    <div class="update-indicator" id="updateIndicator">
-        <span class="pulse-dot"></span> SYNCING DATA
-    </div>
+    <!-- Shooting Stars -->
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
 
-    <div class="container">
-        <header class="header">
-            <h1 class="glitch" data-text="⚡ SMART AGRICULTURE">⚡ SMART AGRICULTURE</h1>
-            <div class="subtitle">REAL-TIME IOT MONITORING SYSTEM</div>
-            <div class="status-bar">
-                <div class="status-item">
-                    <span class="status-label">SYSTEM:</span>
-                    <span class="status-value" id="systemStatus">ONLINE</span>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-title gradient-text">Smart Agriculture System</h1>
+            <p class="hero-subtitle">AI-powered plant health monitoring</p>
+        </div>
+    </section>
+
+    <!-- Live Sensor Data - FIRST! -->
+    <section class="sensor-section">
+        <div class="container">
+            <h2 class="section-title fade-in">Live Readings</h2>
+            <div class="sensor-grid-2x2">
+                <div class="sensor-card fade-in" style="animation-delay: 0.1s">
+                    <div class="sensor-icon">🌡️</div>
+                    <div class="sensor-label">Temperature</div>
+                    <div class="sensor-value" id="temp">--</div>
+                    <div class="sensor-unit">°C</div>
                 </div>
-                <div class="status-item">
-                    <span class="status-label">SYNC:</span>
-                    <span class="status-value" id="lastUpdate">--</span>
+                <div class="sensor-card fade-in" style="animation-delay: 0.2s">
+                    <div class="sensor-icon">💧</div>
+                    <div class="sensor-label">Humidity</div>
+                    <div class="sensor-value" id="humid">--</div>
+                    <div class="sensor-unit">%</div>
+                </div>
+                <div class="sensor-card fade-in" style="animation-delay: 0.3s">
+                    <div class="sensor-icon">🌱</div>
+                    <div class="sensor-label">Soil Moisture</div>
+                    <div class="sensor-value" id="soil">--</div>
+                    <div class="sensor-status" id="soilStatus">--</div>
+                </div>
+                <div class="sensor-card fade-in" style="animation-delay: 0.4s">
+                    <div class="sensor-icon">☀️</div>
+                    <div class="sensor-label">Light Level</div>
+                    <div class="sensor-value" id="light">--</div>
+                    <div class="sensor-status" id="lightStatus">--</div>
                 </div>
             </div>
-        </header>
-        
-        <div class="grid">
-            <!-- Temperature Card -->
-            <div class="card" data-tilt>
-                <div class="card-glow"></div>
-                <div class="card-icon">🌡️</div>
-                <div class="card-label">TEMPERATURE</div>
-                <div class="card-value" id="temp">--</div>
-                <div class="card-unit">°C</div>
-                <div class="progress-ring">
-                    <svg width="140" height="140">
-                        <defs>
-                            <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#ff0080;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#ff8c00;stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
-                        <circle class="progress-bg" cx="70" cy="70" r="60"></circle>
-                        <circle class="progress-bar" cx="70" cy="70" r="60" 
-                                stroke="url(#gradient1)" id="tempProgress"></circle>
-                    </svg>
-                    <div class="progress-text" id="tempPercent">0%</div>
-                </div>
-            </div>
-
-            <!-- Humidity Card -->
-            <div class="card" data-tilt>
-                <div class="card-glow"></div>
-                <div class="card-icon">💧</div>
-                <div class="card-label">HUMIDITY</div>
-                <div class="card-value" id="humid">--</div>
-                <div class="card-unit">%</div>
-                <div class="progress-ring">
-                    <svg width="140" height="140">
-                        <defs>
-                            <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#00f3ff;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#0080ff;stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
-                        <circle class="progress-bg" cx="70" cy="70" r="60"></circle>
-                        <circle class="progress-bar" cx="70" cy="70" r="60" 
-                                stroke="url(#gradient2)" id="humidProgress"></circle>
-                    </svg>
-                    <div class="progress-text" id="humidPercent">0%</div>
-                </div>
-            </div>
-
-            <!-- Soil Moisture Card -->
-            <div class="card" data-tilt>
-                <div class="card-glow"></div>
-                <div class="card-icon">🌾</div>
-                <div class="card-label">SOIL MOISTURE</div>
-                <div class="card-value" id="soil">--</div>
-                <div class="card-unit">RAW</div>
-                <div class="card-status-badge" id="soilStatus">ANALYZING</div>
-                <div class="mini-graph">
-                    <canvas id="soilGraph" width="200" height="60"></canvas>
-                </div>
-            </div>
-
-            <!-- Light Level Card -->
-            <div class="card" data-tilt>
-                <div class="card-glow"></div>
-                <div class="card-icon">☀️</div>
-                <div class="card-label">LIGHT INTENSITY</div>
-                <div class="card-value" id="light">--</div>
-                <div class="card-unit">RAW</div>
-                <div class="card-status-badge" id="lightStatus">ANALYZING</div>
-                <div class="mini-graph">
-                    <canvas id="lightGraph" width="200" height="60"></canvas>
-                </div>
+            <div class="last-update">
+                System Status: <span id="systemStatus" class="status-online">ONLINE</span> • 
+                Last updated: <span id="lastUpdate">--</span>
             </div>
         </div>
+    </section>
 
-        <!-- Alert Box -->
-        <div class="alert-box" id="alertBox">
-            <div class="alert-icon">⚠️</div>
-            <div class="alert-text" id="alertText">INITIALIZING SYSTEM...</div>
-        </div>
-<!-- AI Chat Interface -->
-        <div class="chat-container">
-            <div class="chat-header">
-                <div class="chat-title">🤖 AI Plant Assistant</div>
-                <div class="chat-subtitle">Ask me anything about your plant's health</div>
-            </div>
-            <div class="chat-messages" id="chatMessages">
-                <div class="chat-message bot-message">
-                    <div class="message-avatar">🌱</div>
-                    <div class="message-content">
-                        Hi! I'm your AI plant assistant. I can analyze your sensor data and answer questions about your plant's health. Try asking me something!
+    <!-- Animated System Architecture -->
+    <section class="system-architecture">
+        <div class="container">
+            <h2 class="section-title gradient-text fade-in">How The System Works</h2>
+            <p class="section-subtitle fade-in">From plant to insights in real-time</p>
+            <div class="architecture-visual">
+                <div class="flow-container">
+                    <div class="flow-step" data-aos="fade-up" data-aos-delay="100">
+                        <div class="flow-icon plant-pulse">🌿</div>
+                        <h3>Sensors Monitor</h3>
+                        <p>Four sensors watch your plant 24/7</p>
+                    </div>
+                    
+                    <div class="flow-arrow" data-aos="fade-in" data-aos-delay="200">
+                        <div class="arrow-line"></div>
+                        <span>Every 5 seconds</span>
+                    </div>
+                    
+                    <div class="flow-step" data-aos="fade-up" data-aos-delay="300">
+                        <div class="flow-icon signal-pulse">📡</div>
+                        <h3>ESP32 Processes</h3>
+                        <p>Microcontroller sends data to cloud</p>
+                    </div>
+                    
+                    <div class="flow-arrow" data-aos="fade-in" data-aos-delay="400">
+                        <div class="arrow-line"></div>
+                        <span>WiFi transmission</span>
+                    </div>
+                    
+                    <div class="flow-step" data-aos="fade-up" data-aos-delay="500">
+                        <div class="flow-icon cloud-float">☁️</div>
+                        <h3>Blynk Stores</h3>
+                        <p>Secure cloud storage & API access</p>
+                    </div>
+                    
+                    <div class="flow-arrow" data-aos="fade-in" data-aos-delay="600">
+                        <div class="arrow-line"></div>
+                        <span>Real-time sync</span>
+                    </div>
+                    
+                    <div class="flow-step" data-aos="fade-up" data-aos-delay="700">
+                        <div class="flow-icon dashboard-glow">📊</div>
+                        <h3>Dashboard Shows</h3>
+                        <p>Beautiful visualization on any device</p>
+                    </div>
+                    
+                    <div class="flow-arrow" data-aos="fade-in" data-aos-delay="800">
+                        <div class="arrow-line"></div>
+                        <span>AI analysis</span>
+                    </div>
+                    
+                    <div class="flow-step" data-aos="fade-up" data-aos-delay="900">
+                        <div class="flow-icon ai-sparkle">🤖</div>
+                        <h3>AI Advises</h3>
+                        <p>Smart recommendations from Groq</p>
                     </div>
                 </div>
             </div>
-            <div class="chat-input-container">
-                <input type="text" id="chatInput" class="chat-input" placeholder="Ask about your plant... (e.g., 'Does my plant need water?')" />
-                <button id="sendBtn" class="chat-send-btn">
-                    <span id="sendBtnText">Send</span>
-                    <span id="sendBtnLoader" class="loader" style="display:none;"></span>
-                </button>
+        </div>
+    </section>
+
+    <!-- How It Works - Clickable Cards -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2 class="section-title fade-in">Dive Deeper</h2>
+            <p class="section-subtitle fade-in">Click any card to learn more</p>
+            <div class="work-grid">
+                <div class="work-card fade-in" onclick="openDetail('sensors')" style="animation-delay: 0.1s">
+                    <div class="work-number">1</div>
+                    <h3>Sensor Hardware</h3>
+                    <p>Temperature, humidity, soil moisture, and light sensors working together</p>
+                </div>
+                <div class="work-card fade-in" onclick="openDetail('cloud')" style="animation-delay: 0.2s">
+                    <div class="work-number">2</div>
+                    <h3>Cloud Infrastructure</h3>
+                    <p>Blynk IoT platform provides reliable data storage and API access</p>
+                </div>
+                <div class="work-card fade-in" onclick="openDetail('ai')" style="animation-delay: 0.3s">
+                    <div class="work-number">3</div>
+                    <h3>AI Intelligence</h3>
+                    <p>Groq's Llama model analyzes patterns and provides smart advice</p>
+                </div>
+                <div class="work-card fade-in" onclick="openDetail('action')" style="animation-delay: 0.4s">
+                    <div class="work-number">4</div>
+                    <h3>Your Actions</h3>
+                    <p>Simple recommendations help you care for your plant perfectly</p>
+                </div>
             </div>
         </div>
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-left">ESP32 IoT Agriculture Platform</div>
-            <div class="footer-right">Auto-refresh: 5s</div>
-        </footer>
+    </section>
+
+    <!-- Detail Modal -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeDetail()">&times;</span>
+            <div id="modalBody"></div>
+        </div>
     </div>
+
+    <!-- AI Chat Section -->
+    <section class="ai-section">
+        <div class="container">
+            <h2 class="section-title gradient-text fade-in">Ask The AI</h2>
+            <p class="section-subtitle fade-in">Get intelligent answers about your plant's health</p>
+            
+            <div class="chat-container fade-in">
+                <div class="typing-demo" id="typingDemo"></div>
+                <div class="chat-messages" id="chatMessages"></div>
+                <div class="chat-input-wrapper">
+                    <input 
+                        type="text" 
+                        id="chatInput" 
+                        class="chat-input" 
+                        placeholder="Ask about your plant..."
+                    >
+                    <button id="sendBtn" class="send-button">
+                        <span id="sendBtnText">Send</span>
+                        <span id="sendBtnLoader" class="loader" style="display: none;"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Future Vision -->
+    <section class="future-section">
+        <div class="container">
+            <h2 class="section-title fade-in">Future Vision</h2>
+            <p class="section-subtitle fade-in">Where this project is heading</p>
+            <div class="future-grid">
+                <div class="future-card fade-in" onclick="openDetail('disease')" style="animation-delay: 0.1s">
+                    <div class="future-icon">🔬</div>
+                    <h3>AI Disease Detection</h3>
+                    <p>Detect diseases 48-72 hours before visible symptoms using sensor pattern analysis</p>
+                </div>
+                <div class="future-card fade-in" onclick="openDetail('automation')" style="animation-delay: 0.2s">
+                    <div class="future-icon">🏠</div>
+                    <h3>Automated Dome</h3>
+                    <p>Fully autonomous plant care with AI-controlled watering, lighting, and climate</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Historical Data -->
+    <section class="insights">
+        <div class="container">
+            <h2 class="section-title fade-in">Historical Trends</h2>
+            <div class="graph-grid">
+                <div class="graph-card fade-in" style="animation-delay: 0.1s">
+                    <h3>Soil Moisture Over Time</h3>
+                    <canvas id="soilGraph"></canvas>
+                </div>
+                <div class="graph-card fade-in" style="animation-delay: 0.2s">
+                    <h3>Light Level Over Time</h3>
+                    <canvas id="lightGraph"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <script src="script.js"></script>
 </body>
