@@ -12,6 +12,135 @@ const PINS = {
 let soilHistory = [];
 let lightHistory = [];
 
+// Particle Cursor Trail
+const canvas = document.getElementById('cursorCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+class Particle {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.size = Math.random() * 3 + 1;
+        this.speedX = Math.random() * 2 - 1;
+        this.speedY = Math.random() * 2 - 1;
+        this.color = `rgba(167, 139, 250, ${Math.random()})`;
+        this.life = 100;
+    }
+    
+    update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.life -= 2;
+        if (this.size > 0.1) this.size -= 0.05;
+    }
+    
+    draw() {
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+let mouseX = 0;
+let mouseY = 0;
+
+document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    
+    for (let i = 0; i < 3; i++) {
+        particles.push(new Particle(mouseX, mouseY));
+    }
+});
+
+function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
+        
+        if (particles[i].life <= 0) {
+            particles.splice(i, 1);
+            i--;
+        }
+    }
+    
+    requestAnimationFrame(animateParticles);
+}
+
+animateParticles();
+
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+
+// 3D Tilt Effect for Cards
+document.addEventListener('DOMContentLoaded', () => {
+    const tiltCards = document.querySelectorAll('[data-tilt]');
+    
+    tiltCards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = (y - centerY) / 10;
+            const rotateY = (centerX - x) / 10;
+            
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+        });
+    });
+});
+
+// Scroll-triggered animations with Intersection Observer
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -100px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+        }
+    });
+}, observerOptions);
+
+// Observe all fade-in-up elements
+document.addEventListener('DOMContentLoaded', () => {
+    const fadeElements = document.querySelectorAll('.fade-in-up');
+    fadeElements.forEach(el => observer.observe(el));
+});
+
+// Parallax effect for background stars
+let lastScrollY = window.scrollY;
+
+window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    const bgAnimation = document.querySelector('.bg-animation');
+    
+    if (bgAnimation) {
+        bgAnimation.style.transform = `translateY(${scrollY * 0.5}px)`;
+    }
+    
+    lastScrollY = scrollY;
+}, { passive: true });
+
 // Typing Animation
 const demoQuestions = [
     "Does my plant need water?",
@@ -26,6 +155,8 @@ let isDeleting = false;
 
 function typeQuestion() {
     const typingDemo = document.getElementById('typingDemo');
+    if (!typingDemo) return;
+    
     const currentQuestion = demoQuestions[currentQuestionIndex];
     
     if (!isDeleting && currentCharIndex < currentQuestion.length) {
@@ -57,10 +188,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const sendBtn = document.getElementById('sendBtn');
     const chatInput = document.getElementById('chatInput');
     
-    sendBtn.addEventListener('click', handleSendMessage);
-    chatInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') handleSendMessage();
-    });
+    if (sendBtn && chatInput) {
+        sendBtn.addEventListener('click', handleSendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleSendMessage();
+        });
+    }
 });
 
 // Fetch Data
@@ -128,6 +261,8 @@ function getLightStatus(value) {
 
 function drawGraph(canvasId, data, color) {
     const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    
     const ctx = canvas.getContext('2d');
     const width = canvas.width = canvas.offsetWidth * 2;
     const height = canvas.height = 500;
