@@ -476,25 +476,26 @@ async function handleSendMessage() {
     
     input.focus();
 }
-// Blur sections on scroll
-const sections = document.querySelectorAll('section');
-
-const sectionObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('in-view');
-        } else {
-            entry.target.classList.remove('in-view');
-        }
-    });
-}, {
-    threshold: 0.3,
-    rootMargin: '-100px'
-});
-
+// Blur sections ABOVE as you scroll down
 document.addEventListener('DOMContentLoaded', () => {
-    sections.forEach(section => {
-        sectionObserver.observe(section);
-    });
+    const sections = document.querySelectorAll('section');
+    
+    function checkScroll() {
+        const scrollPosition = window.scrollY + window.innerHeight / 3;
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionBottom = sectionTop + section.offsetHeight;
+            
+            // If we've scrolled PAST this section, blur it
+            if (scrollPosition > sectionBottom) {
+                section.classList.add('scrolled-past');
+            } else {
+                section.classList.remove('scrolled-past');
+            }
+        });
+    }
+    
+    window.addEventListener('scroll', checkScroll, { passive: true });
+    checkScroll(); // Run on page load
 });
-
